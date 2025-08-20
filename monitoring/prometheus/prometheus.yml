@@ -1,0 +1,59 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alerts/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Dashboard Finance Application
+  - job_name: 'dashboard-finance'
+    static_configs:
+      - targets: ['app:8000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # Celery Workers
+  - job_name: 'celery-workers'
+    static_configs:
+      - targets: ['celery-worker:5555']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Redis
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # PostgreSQL (if using postgres_exporter)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Node Exporter (system metrics)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
+
+  # Docker metrics
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['docker:9323']
+    scrape_interval: 30s
