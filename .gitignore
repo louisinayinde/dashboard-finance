@@ -356,6 +356,7 @@ local_config.py
 
 # Credentials and sensitive files
 credentials.md
+METRICS_DOCUMENTATION.md
 project_structure.md
 prerequisites_and_setup.md
 tech_lead_handover.md

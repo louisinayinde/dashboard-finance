@@ -4,7 +4,7 @@ Main API router that includes all sub-routers
 
 from fastapi import APIRouter
 
-from app.api.v1 import auth, stocks, users, websocket
+from app.api.v1 import auth, stocks, users, websocket, test_metrics, simple_test
 
 # Create main API router
 api_router = APIRouter()
@@ -32,6 +32,18 @@ api_router.include_router(
     websocket.router,
     prefix="/ws",
     tags=["WebSocket"]
+)
+
+api_router.include_router(
+    test_metrics.router,
+    prefix="/test",
+    tags=["Test Metrics"]
+)
+
+api_router.include_router(
+    simple_test.router,
+    prefix="/debug",
+    tags=["Debug"]
 )
 
 # Health check endpoint for API

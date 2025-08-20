@@ -10,30 +10,18 @@ from typing import Any
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import JSONResponse
-from prometheus_client import Counter, Histogram
+from fastapi.responses import JSONResponse, Response
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 import structlog
 
 from app.core.config import settings
 from app.core.logging import setup_logging
+from app.core.metrics import REQUEST_COUNT, REQUEST_LATENCY
 from app.api.v1.api import api_router
 
 # Setup logging
 setup_logging()
 logger = structlog.get_logger()
-
-# Prometheus metrics
-REQUEST_COUNT = Counter(
-    "http_requests_total",
-    "Total HTTP requests",
-    ["method", "endpoint", "status"]
-)
-
-REQUEST_LATENCY = Histogram(
-    "http_request_duration_seconds",
-    "HTTP request latency in seconds",
-    ["method", "endpoint"]
-)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -141,6 +129,15 @@ def create_application() -> FastAPI:
             "version": settings.APP_VERSION,
             "environment": settings.ENVIRONMENT,
         }
+    
+    # Prometheus metrics endpoint
+    @app.get("/metrics")
+    async def metrics():
+        """Prometheus metrics endpoint for monitoring"""
+        return Response(
+            content=generate_latest(),
+            media_type=CONTENT_TYPE_LATEST
+        )
     
     # Root endpoint
     @app.get("/")
