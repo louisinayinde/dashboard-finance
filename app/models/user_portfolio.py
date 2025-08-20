@@ -4,10 +4,9 @@ UserPortfolio model for Dashboard Finance
 
 from datetime import datetime
 from sqlalchemy import Column, Integer, Float, DateTime, String, ForeignKey, Text
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-Base = declarative_base()
+from .base import Base
 
 class UserPortfolio(Base):
     """User portfolio model for managing user stock positions"""

@@ -4,11 +4,10 @@ User model for Dashboard Finance
 
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Enum
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import enum
 
-Base = declarative_base()
+from .base import Base
 
 class UserRole(enum.Enum):
     """User roles enumeration"""
